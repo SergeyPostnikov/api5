@@ -36,6 +36,20 @@ def get_python_salary() -> list:
     return vacancies
 
 
+def predict_rub_salary(vacancy: dict) -> float:
+    salary = vacancy['salary']
+    if salary is not None and salary['currency'] == 'RUR':
+        if salary.get('from') and salary.get('to'):
+            return (salary.get('to') - salary.get('from')) / 2
+        elif salary.get('to') is None:
+            return salary.get('from') * 1.2
+        elif salary.get('from') is None:
+            return salary.get('to') * 0.8
+    return None
+
+
 if __name__ == '__main__':
-    from pprint import pprint
-    pprint(get_python_salary())
+    # from pprint import pprint
+    # pprint(get_python_salary())
+    for vacancy in get_vacancies('python').get('items'):
+        print(predict_rub_salary(vacancy))
