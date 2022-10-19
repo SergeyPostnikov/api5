@@ -66,3 +66,15 @@ if __name__ == '__main__':
     # for vacancy in get_vacancies('python').get('items'):
     #     print(predict_rub_salary(vacancy))
     pprint(get_statistic())
+
+
+# page = 0
+# pages_number = 1
+
+# while page < pages_number:
+#     page_response = requests.get(url, params={'page': page})
+#     page_response.raise_for_status()
+
+#     page_payload = page_response.json()
+#     pages_number = page_payload['pages_number']
+#     page += 1
