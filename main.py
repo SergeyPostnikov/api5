@@ -1,13 +1,15 @@
 import requests
 
 
-def get_vacancies(text: str) -> dict:
+def get_vacancies(text: str, page: int) -> dict:
     url = "https://api.hh.ru/vacancies/"
     payload = {
         "specialization": 1.221,
         "area": 1,
         "period": 30,
-        "text": text
+        "text": text,
+        "per_page": 100, 
+        "page": page
     }
     response = requests.get(url, params=payload)
     response.raise_for_status()
@@ -38,7 +40,7 @@ def get_statistic() -> dict:
             if salary is not None:
                 total += salary
                 vacancies_processed += 1
-        statistic[lang] = {
+        statistic[lang] = { 
             "vacancies_found": vacancies["found"],
             "vacancies_processed": vacancies_processed,
             "average_salary": total // vacancies_processed
@@ -62,6 +64,7 @@ def get_python_salary() -> list:
 
 if __name__ == '__main__':
     from pprint import pprint
+<<<<<<< Updated upstream
     # pprint(get_python_salary())
     # for vacancy in get_vacancies('python').get('items'):
     #     print(predict_rub_salary(vacancy))
@@ -78,3 +81,6 @@ if __name__ == '__main__':
 #     page_payload = page_response.json()
 #     pages_number = page_payload['pages_number']
 #     page += 1
+=======
+
+>>>>>>> Stashed changes
