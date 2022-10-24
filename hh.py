@@ -1,10 +1,11 @@
 import requests
+from collections import defaultdict
 
 
 def get_vacancies(text: str) -> list[dict]:
     url = "https://api.hh.ru/vacancies/"
     page = 0
-    pages = []
+    pages = defaultdict(list)
     payload = {
         "specialization": 1.221,
         "area": 1,
@@ -18,7 +19,8 @@ def get_vacancies(text: str) -> list[dict]:
         response = requests.get(url, params=payload)
         response.raise_for_status()
         vacancies = response.json()
-        pages += vacancies['items']
+        pages['items'] += vacancies['items']
+        pages['found'] = vacancies['found']
         pages_number = vacancies['pages']
         payload['page'] = page
         page += 1
@@ -41,16 +43,16 @@ def get_statistic() -> dict:
     langs = ['python', 'Java', 'Javascript', 'PHP']
     statistic = {}
     for lang in langs:
-        vacancies = get_vacancies(text=lang, page=1)
+        vacancies = get_vacancies(text=lang)
         total = 0
         vacancies_processed = 0
-        for vacancy in vacancies:
+        for vacancy in vacancies.get('items'):
             salary = predict_rub_salary(vacancy) 
             if salary is not None:
                 total += salary
                 vacancies_processed += 1
         statistic[lang] = { 
-            "vacancies_found": len(vacancies),
+            "vacancies_found": vacancies.get('found'),
             "vacancies_processed": vacancies_processed,
             "average_salary": total // vacancies_processed
         }
