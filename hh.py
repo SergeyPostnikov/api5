@@ -73,6 +73,3 @@ def get_python_salary() -> list:
     return vacancies
 
 
-if __name__ == '__main__':
-    from pprint import pprint
-    pprint(get_statistic())
