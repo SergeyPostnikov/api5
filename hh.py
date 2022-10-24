@@ -1,8 +1,10 @@
 import requests
 
 
-def get_vacancies(text: str, page: int) -> dict:
+def get_vacancies(text: str) -> list[dict]:
     url = "https://api.hh.ru/vacancies/"
+    page = 0
+    pages = []
     payload = {
         "specialization": 1.221,
         "area": 1,
@@ -11,9 +13,16 @@ def get_vacancies(text: str, page: int) -> dict:
         "per_page": 100, 
         "page": page
     }
-    response = requests.get(url, params=payload)
-    response.raise_for_status()
-    return response.json()
+    pages_number = 1
+    while page < pages_number:
+        response = requests.get(url, params=payload)
+        response.raise_for_status()
+        vacancies = response.json()
+        pages += vacancies['items']
+        pages_number = vacancies['pages']
+        payload['page'] = page
+        page += 1
+    return pages
 
 
 def predict_rub_salary(vacancy: dict) -> float:
@@ -35,13 +44,13 @@ def get_statistic() -> dict:
         vacancies = get_vacancies(text=lang)
         total = 0
         vacancies_processed = 0
-        for vacancy in vacancies.get('items'):
+        for vacancy in vacancies:
             salary = predict_rub_salary(vacancy) 
             if salary is not None:
                 total += salary
                 vacancies_processed += 1
         statistic[lang] = { 
-            "vacancies_found": vacancies["found"],
+            "vacancies_found": len(vacancies),
             "vacancies_processed": vacancies_processed,
             "average_salary": total // vacancies_processed
         }
@@ -64,7 +73,7 @@ def get_python_salary() -> list:
 
 if __name__ == '__main__':
     from pprint import pprint
-<<<<<<< Updated upstream
+# <<<<<<< Updated upstream
     # pprint(get_python_salary())
     # for vacancy in get_vacancies('python').get('items'):
     #     print(predict_rub_salary(vacancy))
@@ -81,6 +90,15 @@ if __name__ == '__main__':
 #     page_payload = page_response.json()
 #     pages_number = page_payload['pages_number']
 #     page += 1
-=======
+# =======
 
->>>>>>> Stashed changes
+# >>>>>>> Stashed changes
+    # while True:
+    #     try:
+    #         response = requests.get(url, params=payload)
+    #         response.raise_for_status()
+    #         vacancies = response.json()
+    #         pages.append(vacancies['items'])
+    #     except requests.exceptions.HTTPError:
+    #         pass
+    # return pages
