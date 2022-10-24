@@ -2,6 +2,7 @@ import requests
 import os
 
 from dotenv import load_dotenv
+from terminaltables import AsciiTable
 
 
 def get_vacancies(text: str) -> list:
@@ -48,17 +49,33 @@ def get_statistic() -> dict:
         statistic[lang] = { 
             "vacancies_found": vacancies["total"],
             "vacancies_processed": vacancies_processed,
-            "average_salary": total // vacancies_processed
+            "average_salary": int(total // vacancies_processed)
         }
     return statistic
 
 
+def get_table(title: str, statistic: dict) -> AsciiTable.table:
+    table_data = [
+        [
+            'Язык программирования', 
+            'Вакансий найдено', 
+            'Вакансий обработано',  
+            'Средняя зарплата'
+        ]
+    ]
+    for lang in statistic:
+        table_data.append([
+            f'{lang}', 
+            f'{statistic[lang]["vacancies_found"]}',
+            f'{statistic[lang]["vacancies_processed"]}',
+            f'{statistic[lang]["average_salary"]}'
+            ])
+
+    table = AsciiTable(table_data, title)
+    return table.table
+
+
 if __name__ == '__main__':
-    from pprint import pprint
+    # from pprint import pprint
     load_dotenv()
-    # vacancies = get_vacancies('python')
-    # for vacancy in vacancies.get("objects"):
-        # pprint(vacancy.get("profession"), 'От', vacancy.get("payment_from"), 'До', vacancy.get("payment_to"))
-        # pprint(predict_rub_salary_for_superJob(vacancy))
-    pprint(get_statistic())
-    # pprint(get_vacancies('aburvalg', 26))
+    print(get_table('SuperJob', statistic=get_statistic()))
