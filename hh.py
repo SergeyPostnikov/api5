@@ -41,7 +41,7 @@ def get_statistic() -> dict:
     langs = ['python', 'Java', 'Javascript', 'PHP']
     statistic = {}
     for lang in langs:
-        vacancies = get_vacancies(text=lang)
+        vacancies = get_vacancies(text=lang, page=1)
         total = 0
         vacancies_processed = 0
         for vacancy in vacancies:
@@ -73,32 +73,4 @@ def get_python_salary() -> list:
 
 if __name__ == '__main__':
     from pprint import pprint
-# <<<<<<< Updated upstream
-    # pprint(get_python_salary())
-    # for vacancy in get_vacancies('python').get('items'):
-    #     print(predict_rub_salary(vacancy))
     pprint(get_statistic())
-
-
-# page = 0
-# pages_number = 1
-
-# while page < pages_number:
-#     page_response = requests.get(url, params={'page': page})
-#     page_response.raise_for_status()
-
-#     page_payload = page_response.json()
-#     pages_number = page_payload['pages_number']
-#     page += 1
-# =======
-
-# >>>>>>> Stashed changes
-    # while True:
-    #     try:
-    #         response = requests.get(url, params=payload)
-    #         response.raise_for_status()
-    #         vacancies = response.json()
-    #         pages.append(vacancies['items'])
-    #     except requests.exceptions.HTTPError:
-    #         pass
-    # return pages
