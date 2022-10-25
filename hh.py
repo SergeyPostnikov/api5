@@ -71,5 +71,3 @@ def get_python_salary() -> list:
         else:
             vacancies.append(None)
     return vacancies
-
-
