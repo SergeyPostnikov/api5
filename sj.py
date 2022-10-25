@@ -1,8 +1,6 @@
 import requests
 import os
 
-from dotenv import load_dotenv
-
 
 def get_vacancies(text: str) -> list:
     url = 'https://api.superjob.ru/2.0/vacancies/'
