@@ -5,7 +5,7 @@ from sj import get_statistic as get_sj_statistic
 
 
 def get_table(title: str, statistic: dict) -> AsciiTable.table:
-    table_data = [
+    summary_table = [
         [
             'Язык программирования', 
             'Вакансий найдено', 
@@ -14,14 +14,14 @@ def get_table(title: str, statistic: dict) -> AsciiTable.table:
         ]
     ]
     for lang in statistic:
-        table_data.append([
+        summary_table.append([
             f'{lang}', 
             f'{statistic[lang]["vacancies_found"]}',
             f'{statistic[lang]["vacancies_processed"]}',
             f'{statistic[lang]["average_salary"]}'
             ])
 
-    table = AsciiTable(table_data, title)
+    table = AsciiTable(summary_table, title)
     return table.table
 
 
