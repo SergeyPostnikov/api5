@@ -16,7 +16,7 @@ pip install -r requirements.txt
 python main.py
 ```
 ## main.py
-Main application in package. Print two tapbles - for superjob an headhunter.
+Main application in package. Print two tables - for superjob an headhunter.
 
 ## hh.py
 module provide three function for receive and handle date from [head hunter api](https://api.hh.ru/)
