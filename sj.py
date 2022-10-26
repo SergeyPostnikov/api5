@@ -1,21 +1,33 @@
 import requests
+from collections import defaultdict
 
 
 def get_vacancies(text: str, api_key: str) -> list:
     url = 'https://api.superjob.ru/2.0/vacancies/'
     moscow_city_id = '4'
+    page = 0
+    per_page = 100
+    pages_number = 1
+    vacancies = defaultdict(list)
     headers = {'X-Api-App-Id': api_key}
     payload = {
         't':  moscow_city_id,
         'keyword': text,
+        'page': page,
+        'count': per_page, 
         }
-    response = requests.get(
-        url, 
-        params=payload, 
-        headers=headers
-        )
-    response.raise_for_status()
-    return response.json()
+    while page < pages_number:
+        response = requests.get(
+            url, 
+            params=payload, 
+            headers=headers
+            )
+        response.raise_for_status()
+        vacancies["objects"] += response.json().get("objects")
+        vacancies["total"][0] += int(response.json().get("total"))
+        page += 1
+        payload['page'] = page
+    return vacancies
 
 
 def predict_rub_salary_for_superJob(vacancy: dict) -> float:
@@ -40,7 +52,7 @@ def get_statistic(api_key: str) -> dict:
         vacancies_processed = 0
         for vacancy in vacancies.get("objects"):
             salary = predict_rub_salary_for_superJob(vacancy) 
-            if salary is not None:
+            if salary:
                 total += salary
                 vacancies_processed += 1
         statistic[lang] = { 
