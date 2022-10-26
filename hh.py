@@ -6,10 +6,13 @@ def get_vacancies(text: str) -> list[dict]:
     url = "https://api.hh.ru/vacancies/"
     page = 0
     pages = defaultdict(list)
+    programming_development = 1.221
+    moscow_city_id = 1
+    days = 30
     payload = {
-        "specialization": 1.221,
-        "area": 1,
-        "period": 30,
+        "specialization": programming_development,
+        "area": moscow_city_id,
+        "period": days,
         "text": text,
         "per_page": 100, 
         "page": page

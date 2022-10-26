@@ -3,9 +3,10 @@ import requests
 
 def get_vacancies(text: str, api_key: str) -> list:
     url = 'https://api.superjob.ru/2.0/vacancies/'
+    moscow_city_id = '4'
     headers = {'X-Api-App-Id': api_key}
     payload = {
-        't': '4',
+        't':  moscow_city_id,
         'keyword': text,
         }
     response = requests.get(
