@@ -1,10 +1,9 @@
 import requests
-import os
 
 
-def get_vacancies(text: str) -> list:
+def get_vacancies(text: str, api_key: str) -> list:
     url = 'https://api.superjob.ru/2.0/vacancies/'
-    headers = {'X-Api-App-Id': os.getenv('API_SUPERJOB')}
+    headers = {'X-Api-App-Id': api_key}
     payload = {
         't': '4',
         'keyword': text,
@@ -31,11 +30,11 @@ def predict_rub_salary_for_superJob(vacancy: dict) -> float:
     return None 
 
 
-def get_statistic() -> dict:
+def get_statistic(api_key: str) -> dict:
     langs = ['python', 'Java', 'Javascript', 'PHP']
     statistic = {}
     for lang in langs:
-        vacancies = get_vacancies(text=lang)
+        vacancies = get_vacancies(text=lang, api_key=api_key)
         total = 0
         vacancies_processed = 0
         for vacancy in vacancies.get("objects"):
