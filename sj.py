@@ -2,21 +2,20 @@ import requests
 from collections import defaultdict
 
 
-def get_vacancies(text: str, api_key: str) -> list:
+def get_vacancies(text: str, api_key: str) -> defaultdict:
     url = 'https://api.superjob.ru/2.0/vacancies/'
     moscow_city_id = '4'
     page = 0
-    per_page = 100
-    pages_number = 1
+    next_page_exists = True
     vacancies = defaultdict(list)
+    vacancies["total"] = 0
     headers = {'X-Api-App-Id': api_key}
     payload = {
         't':  moscow_city_id,
         'keyword': text,
-        'page': page,
-        'count': per_page, 
+        'page': page
         }
-    while page < pages_number:
+    while next_page_exists:
         response = requests.get(
             url, 
             params=payload, 
@@ -24,9 +23,9 @@ def get_vacancies(text: str, api_key: str) -> list:
             )
         response.raise_for_status()
         vacancies["objects"] += response.json().get("objects")
-        vacancies["total"][0] += int(response.json().get("total"))
-        page += 1
-        payload['page'] = page
+        vacancies["total"] = int(response.json().get("total"))
+        next_page_exists = response.json().get("more")
+        payload['page'] += 1
     return vacancies
 
 
