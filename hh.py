@@ -1,5 +1,6 @@
 import requests
 from collections import defaultdict
+from service_functions import predict_salary
 
 
 def get_vacancies(text: str) -> list[dict]:
@@ -31,15 +32,12 @@ def get_vacancies(text: str) -> list[dict]:
 
 
 def predict_rub_salary(vacancy: dict) -> float:
-    salary = vacancy['salary']
-    if salary is not None and salary['currency'] == 'RUR':
-        if salary.get('from') and salary.get('to'):
-            return (salary.get('to') - salary.get('from')) / 2
-        elif salary.get('to') is None:
-            return salary.get('from') * 1.2
-        elif salary.get('from') is None:
-            return salary.get('to') * 0.8
-    return None
+    salary = vacancy.get('salary')
+    if not salary or salary['currency'] != 'RUR':
+        return None
+    payment_floor = salary.get('from')
+    payment_top = vacancy.get('to')
+    return predict_salary(payment_floor=payment_floor, payment_top=payment_top)
 
 
 def get_statistic() -> dict:
@@ -51,21 +49,22 @@ def get_statistic() -> dict:
         vacancies_processed = 0
         for vacancy in vacancies.get('items'):
             salary = predict_rub_salary(vacancy) 
-            if salary is not None:
+            if salary:
                 total += salary
                 vacancies_processed += 1
         statistic[lang] = { 
             "vacancies_found": vacancies.get('found'),
             "vacancies_processed": vacancies_processed,
-            "average_salary": total // vacancies_processed
         }
+        if vacancies_processed:
+            statistic[lang]["average_salary"] = int(total // vacancies_processed)
     return statistic
 
 
 def get_python_salary() -> list:
     vacancies = []
     for vacancy in get_vacancies('python').get('items'):
-        if vacancy['salary'] is not None:
+        if not vacancy['salary']:
             vacancies.append({
                 'from': vacancy['salary'].get('from'),
                 'to': vacancy['salary'].get('to'), 

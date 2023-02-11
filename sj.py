@@ -1,5 +1,6 @@
 import requests
 from collections import defaultdict
+from service_functions import predict_salary
 
 
 def get_vacancies(text: str, api_key: str) -> defaultdict:
@@ -13,8 +14,10 @@ def get_vacancies(text: str, api_key: str) -> defaultdict:
     payload = {
         't':  moscow_city_id,
         'keyword': text,
+        'count': 100,
         'page': page
         }
+
     while next_page_exists:
         response = requests.get(
             url, 
@@ -30,16 +33,11 @@ def get_vacancies(text: str, api_key: str) -> defaultdict:
 
 
 def predict_rub_salary_for_superJob(vacancy: dict) -> float:
-    if vacancy['currency'] == 'rub':
-        payment_floor = vacancy.get('payment_from')
-        payment_top = vacancy.get('payment_to')
-        if payment_floor and payment_top:
-            return (payment_top - payment_floor) / 2
-        elif not payment_top and payment_floor:
-            return payment_floor * 1.2
-        elif payment_top and not payment_floor:
-            return payment_top * 0.8
-    return None 
+    payment_floor = vacancy.get('payment_from')
+    payment_top = vacancy.get('payment_to')
+    if vacancy['currency'] != 'rub':
+        return None 
+    return predict_salary(payment_floor=payment_floor, payment_top=payment_top)
 
 
 def get_statistic(api_key: str) -> dict:
@@ -60,3 +58,4 @@ def get_statistic(api_key: str) -> dict:
             "average_salary": int(total // vacancies_processed)
         }
     return statistic
+
