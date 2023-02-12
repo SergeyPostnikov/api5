@@ -25,9 +25,10 @@ def get_vacancies(text: str, api_key: str) -> defaultdict:
             headers=headers
             )
         response.raise_for_status()
-        vacancies["objects"] += response.json().get("objects")
-        vacancies["total"] = int(response.json().get("total"))
-        next_page_exists = response.json().get("more")
+        resp_json: dict = response.json()
+        vacancies["objects"] += resp_json.get("objects")
+        vacancies["total"] = int(resp_json.get("total"))
+        next_page_exists = resp_json.get("more")
         payload['page'] += 1
     return vacancies
 
