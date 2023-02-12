@@ -55,7 +55,7 @@ def get_statistic(api_key: str) -> dict:
         statistic[lang] = { 
             "vacancies_found": vacancies["total"],
             "vacancies_processed": vacancies_processed,
-            "average_salary": int(total // vacancies_processed)
         }
+        if vacancies_processed:
+            statistic[lang]["average_salary"] = int(total // vacancies_processed)
     return statistic
-
