@@ -59,17 +59,3 @@ def get_statistic() -> dict:
         if vacancies_processed:
             statistic[lang]["average_salary"] = int(total // vacancies_processed)
     return statistic
-
-
-def get_python_salary() -> list:
-    vacancies = []
-    for vacancy in get_vacancies('python').get('items'):
-        if not vacancy['salary']:
-            vacancies.append({
-                'from': vacancy['salary'].get('from'),
-                'to': vacancy['salary'].get('to'), 
-                'currency': vacancy['salary'].get('currency'), 
-                'gross': vacancy['salary'].get('gross')})
-        else:
-            vacancies.append(None)
-    return vacancies
